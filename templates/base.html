@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf5ef">
+  <title>{% block title %}Home{% endblock %} · Sakura Blooms</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body class="{% if not session.get('user_id') %}auth-body{% endif %}">
+  {% if cycle_reminder %}<div id="cycle-reminder-schedule" hidden data-enabled="{{ 1 if cycle_reminder.enabled else 0 }}" data-reminder-date="{{ cycle_reminder.reminder_date }}" data-period-date="{{ cycle_reminder.period_date }}" data-days-before="{{ cycle_reminder.days_before }}"></div>{% endif %}
+  <div class="site-shell">
+    {% if session.get('user_id') %}
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Sakura Blooms home">
+        <span class="brand-flower" aria-hidden="true">✿</span>
+        <span>sakura <i>blooms</i></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Today</a>
+        <a href="{{ url_for('calendar_view') }}" class="{{ 'active' if request.endpoint == 'calendar_view' else '' }}">Calendar</a>
+        <a href="{{ url_for('statistics') }}" class="{{ 'active' if request.endpoint == 'statistics' else '' }}">Insights</a>
+        <a href="{{ url_for('notes') }}" class="{{ 'active' if request.endpoint == 'notes' else '' }}">Diary</a>
+      </nav>
+      <div class="top-actions">
+        <a class="icon-link settings-link" href="{{ url_for('settings') }}" aria-label="Settings" title="Settings">⚙</a>
+        <form action="{{ url_for('logout') }}" method="post" class="logout-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="text-button" type="submit">Log out</button>
+        </form>
+      </div>
+    </header>
+    {% endif %}
+    <main class="page-main {% if not session.get('user_id') %}auth-main{% endif %}">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flash-stack" aria-live="polite">
+          {% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}
+        </div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+      <span>Sakura Blooms <span aria-hidden="true">✿</span> a softer way to keep track</span>
+      <span>{{ disclaimer }}</span>
+    </footer>
+  </div>
+</body>
+</html>

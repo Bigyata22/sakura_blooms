@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Today{% endblock %}
+{% block content %}
+<section class="welcome-row">
+  <div>
+    <p class="eyebrow">{{ today.strftime('%A, %B %d') }} <span aria-hidden="true">✿</span></p>
+    <h1>A little space for <em>you</em>, {{ user.name.split()[0] }}.</h1>
+    <p class="lede">Your cycle is personal. Let’s keep its little details in one peaceful place.</p>
+  </div>
+  <a class="button button-primary" href="{{ url_for('log_period') }}"><span aria-hidden="true">＋</span> Log a period</a>
+</section>
+
+{% if summary.days_remaining is not none and summary.days_remaining <= user.reminder_days %}
+<section class="reminder-banner">
+  <span class="reminder-flower" aria-hidden="true">✿</span>
+  <div><p class="eyebrow">A gentle reminder from Sakura Blooms</p><h2>Your period may be approaching in {{ summary.days_remaining }} {{ 'day' if summary.days_remaining == 1 else 'days' }}.</h2><p>Take care of yourself, and remember to update your tracker when you’re ready.</p></div>
+  <a href="{{ url_for('settings') }}" class="quiet-link">Reminder settings <span aria-hidden="true">↗</span></a>
+</section>
+{% endif %}
+
+<section class="dashboard-grid">
+  <article class="cycle-card">
+    <div class="cycle-card-top"><span class="small-label">YOUR CYCLE</span><span class="cycle-mark" aria-hidden="true">✿</span></div>
+    {% if summary.cycle_day %}<p class="cycle-number">{{ summary.cycle_day }}<span> / {{ summary.cycle_length }}</span></p><p class="cycle-caption">Day of your estimated cycle</p>
+    {% else %}<p class="cycle-number">—<span> / {{ summary.cycle_length }}</span></p><p class="cycle-caption">Log a period to see your cycle day</p>{% endif %}
+    <div class="cycle-track"><span style="width: {{ ((summary.cycle_day or 0) / summary.cycle_length * 100)|round }}%"></span></div>
+    <div class="cycle-meta"><span>Day 1</span><span>Estimated cycle length</span><strong>{{ summary.cycle_length }} days</strong></div>
+  </article>
+  <article class="next-card">
+    <span class="next-flower" aria-hidden="true">✿</span>
+    <p class="small-label">LOOKING AHEAD</p>
+    {% if summary.estimated_next %}
+      <h2>{% if summary.days_remaining == 0 %}Around today{% elif summary.days_remaining == 1 %}About a day away{% else %}{{ summary.days_remaining }} days away{% endif %}</h2>
+      <p>Your next period is <strong>estimated</strong> around {{ summary.estimated_next.strftime('%B %d') }}.</p>
+      <a href="{{ url_for('calendar_view') }}" class="quiet-link">See your calendar <span aria-hidden="true">↗</span></a>
+    {% else %}<h2>Your next chapter</h2><p>Log your first period to see a personal estimate here.</p><a href="{{ url_for('log_period') }}" class="quiet-link">Add a period <span aria-hidden="true">↗</span></a>{% endif %}
+  </article>
+</section>
+
+<section class="section-heading"><div><p class="eyebrow">A FEW QUICK NOTES</p><h2>Your cycle at a glance</h2></div><a class="quiet-link" href="{{ url_for('statistics') }}">All insights <span aria-hidden="true">↗</span></a></section>
+<section class="stat-grid">
+  <article class="stat-tile"><span class="tile-icon blush" aria-hidden="true">✿</span><div><p>Last period</p><strong>{{ summary.last_start.strftime('%b %d') if summary.last_start else 'Not logged' }}</strong></div></article>
+  <article class="stat-tile"><span class="tile-icon sage" aria-hidden="true">◷</span><div><p>Average cycle</p><strong>{{ summary.cycle_length }} <small>days</small></strong></div></article>
+  <article class="stat-tile"><span class="tile-icon butter" aria-hidden="true">☼</span><div><p>Typical period</p><strong>{{ summary.period_length }} <small>days</small></strong></div></article>
+</section>
+
+<section class="section-heading section-heading-spaced"><div><p class="eyebrow">CHECK IN WITH YOURSELF</p><h2>How are you feeling?</h2></div></section>
+<section class="checkin-grid">
+  <a class="checkin-link" href="{{ url_for('mood') }}"><span class="checkin-emoji">☻</span><span><strong>Log your mood</strong><small>A small check-in can say a lot.</small></span><span class="arrow">↗</span></a>
+  <a class="checkin-link" href="{{ url_for('symptoms') }}"><span class="checkin-emoji">♡</span><span><strong>Track symptoms</strong><small>Notice patterns at your own pace.</small></span><span class="arrow">↗</span></a>
+  <a class="checkin-link" href="{{ url_for('notes') }}"><span class="checkin-emoji">▤</span><span><strong>Write a note</strong><small>Keep a thought for later.</small></span><span class="arrow">↗</span></a>
+</section>
+{% endblock %}

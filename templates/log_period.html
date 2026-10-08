@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Log a period{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">A MOMENT FOR YOURSELF</p><h1>Log a period</h1><p class="lede">Your notes are private and saved only to your account.</p></div></section>
+<div class="form-layout"><form method="post" class="form-panel" data-period-form>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <div class="form-intro"><span class="form-flower" aria-hidden="true">✿</span><div><h2>Start with the dates</h2><p>It’s okay if you’re not certain about the last day. You can update your log later.</p></div></div>
+  <div class="field-grid"><label class="field"><span>Period start date</span><input type="date" name="start_date" max="{{ today.isoformat() }}" required value="{{ request.form.get('start_date', '') }}"></label><label class="field"><span>Period end date</span><input type="date" name="end_date" max="{{ today.isoformat() }}" required value="{{ request.form.get('end_date', '') }}"></label></div>
+  <fieldset class="field flow-field"><legend>Flow</legend><div class="choice-row">{% for flow in ['Light', 'Medium', 'Heavy'] %}<label class="choice-chip"><input type="radio" name="flow" value="{{ flow }}" {{ 'checked' if request.form.get('flow', 'Medium') == flow else '' }}><span>{{ flow }}</span></label>{% endfor %}</div></fieldset>
+  <label class="field"><span>Notes <small>(optional)</small></span><textarea name="notes" rows="4" maxlength="2000" placeholder="Anything you'd like to remember?">{{ request.form.get('notes', '') }}</textarea></label>
+  <div class="form-actions"><button class="button button-primary" type="submit"><span aria-hidden="true">✿</span> Save period</button><a class="quiet-link" href="{{ url_for('calendar_view') }}">Cancel</a></div>
+</form><aside class="form-aside"><p class="eyebrow">A NOTE ON ESTIMATES</p><h2>Your body, your pace.</h2><p>Cycle dates can shift from month to month. Sakura Blooms offers personal estimates for tracking, not certainty or medical advice.</p><div class="aside-doodle" aria-hidden="true">✿<span>✿</span>✿</div></aside></div>
+{% endblock %}

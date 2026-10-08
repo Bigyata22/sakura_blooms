@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Calendar{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">YOUR PERSONAL RHYTHM</p><h1>Cycle calendar</h1><p class="lede">A gentle overview, with estimates clearly marked.</p></div><a class="button button-primary" href="{{ url_for('log_period') }}"><span aria-hidden="true">＋</span> Log a period</a></section>
+<div class="calendar-layout">
+  <section class="calendar-panel">
+    <div class="calendar-toolbar"><a class="month-arrow" href="{{ url_for('calendar_view', month=previous_month) }}" aria-label="Previous month">‹</a><h2>{{ month_label }}</h2><a class="month-arrow" href="{{ url_for('calendar_view', month=next_month) }}" aria-label="Next month">›</a></div>
+    <div class="calendar-grid calendar-weekdays" aria-hidden="true">{% for day_name in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] %}<span>{{ day_name }}</span>{% endfor %}</div>
+    <div class="calendar-grid calendar-days">
+      {% for week in month_cells %}{% for cell in week %}
+      <div class="calendar-day {{ 'outside' if not cell.in_month else '' }} {{ 'is-today' if cell.today else '' }} {{ 'logged-day' if cell.logged else '' }} {{ 'estimated-day' if cell.estimated else '' }}">
+        <span class="day-number">{{ cell.date.day }}</span>
+        {% if cell.logged %}<span class="day-symbol" title="Logged period">✿</span>{% elif cell.estimated %}<span class="day-symbol" title="Estimated period">✿</span>{% endif %}
+      </div>
+      {% endfor %}{% endfor %}
+    </div>
+    <div class="calendar-legend"><span><i class="legend-dot logged-dot">✿</i> Logged period</span><span><i class="legend-dot estimated-dot">✿</i> Estimated</span><span><i class="legend-dot today-dot">{{ today.day }}</i> Today</span></div>
+  </section>
+  <aside class="calendar-aside">
+    <article class="aside-note"><span class="aside-sprig" aria-hidden="true">✿</span><p class="eyebrow">YOUR NEXT ESTIMATE</p>{% if summary.estimated_next %}<h2>{{ summary.estimated_next.strftime('%b %d') }}</h2><p>Based on an average cycle of {{ summary.cycle_length }} days. Your body may follow its own rhythm.</p>{% else %}<h2>Not yet estimated</h2><p>Log a period and we’ll start learning your personal cycle.</p>{% endif %}</article>
+    <article class="recent-card"><div class="section-heading compact"><div><p class="eyebrow">YOUR LOG</p><h2>Recent periods</h2></div></div>
+      {% if recent_periods %}<div class="recent-list">{% for period in recent_periods %}<div class="recent-row"><span class="recent-dot">✿</span><span><strong>{{ period.start_date|prettydate }}</strong><small>{{ period.end_date|prettydate }} · {{ period.flow }} flow</small></span></div>{% endfor %}</div>{% else %}<p class="muted-copy">Your saved periods will appear here.</p>{% endif %}
+    </article>
+  </aside>
+</div>
+{% endblock %}

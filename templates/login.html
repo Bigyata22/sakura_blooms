@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Welcome back{% endblock %}
+{% block content %}
+<section class="auth-card"><a class="brand auth-brand" href="{{ url_for('login') }}"><span class="brand-flower" aria-hidden="true">✿</span><span>sakura <i>blooms</i></span></a><p class="eyebrow">A QUIET CORNER OF YOUR OWN</p><h1>Welcome <em>back.</em></h1><p class="auth-copy">Your diary is here whenever you need it.</p><form method="post" class="auth-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label class="field"><span>Email address</span><input type="email" name="email" autocomplete="email" required value="{{ request.form.get('email', '') }}"></label><label class="field"><span>Password</span><input type="password" name="password" autocomplete="current-password" required></label><button class="button button-primary button-full" type="submit">Log in to Sakura Blooms <span aria-hidden="true">↗</span></button></form><p class="auth-switch">New to Sakura Blooms? <a href="{{ url_for('register') }}">Create an account</a></p><div class="auth-decoration" aria-hidden="true">✿ <span>✿</span> ✿</div></section>
+{% endblock %}

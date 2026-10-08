@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Symptoms{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">LISTENING TO YOUR BODY</p><h1>Symptom notes</h1><p class="lede">Track what you notice without judgment. Patterns can take time.</p></div></section>
+<div class="two-column-layout"><form method="post" class="form-panel compact-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><h2>How is today feeling?</h2><label class="field"><span>Date</span><input type="date" name="log_date" max="{{ today.isoformat() }}" value="{{ today.isoformat() }}" required></label><fieldset class="field"><legend>Choose any that fit</legend><div class="symptom-options">{% for option in options %}<label class="symptom-option"><input type="checkbox" name="symptoms" value="{{ option }}"><span>{{ option }}</span></label>{% endfor %}</div></fieldset><button class="button button-primary" type="submit">Save symptoms</button></form>
+<section class="history-panel"><div class="section-heading compact"><div><p class="eyebrow">YOUR RECENT CHECK-INS</p><h2>Symptoms history</h2></div></div>{% if history %}<div class="log-history">{% for entry in history %}<article class="history-entry"><time>{{ entry.log_date|prettydate }}</time><div class="tag-list">{% for symptom in entry.symptoms_list %}<span class="tag">{{ symptom }}</span>{% endfor %}</div></article>{% endfor %}</div>{% else %}<div class="empty-state"><span aria-hidden="true">♡</span><p>Your symptom check-ins will be kept here.</p></div>{% endif %}</section></div>
+{% endblock %}
